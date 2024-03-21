@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
-import 'package:rick_and_morty_app/Presentation/Screens/Detail/detail_screen.dart';
+import 'package:rick_and_morty_app/Presentation/Screens/Home/Detail/detail_screen.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/home_screen_provider.dart';
 
 final class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (context) => HomeScreenProvider(),
+        child: const _HomeScreenScaffold());
+  }
+}
+
+class _HomeScreenScaffold extends StatelessWidget {
+  const _HomeScreenScaffold();
 
   @override
   Widget build(BuildContext context) {
