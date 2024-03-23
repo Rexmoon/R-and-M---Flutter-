@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Favorites/favorite_screen.dart';
-import 'package:rick_and_morty_app/Presentation/Screens/Home/home_screen.dart';
-import 'package:rick_and_morty_app/Presentation/Screens/Home/home_screen_provider.dart';
+import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen.dart';
+import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen_provider.dart';
 
 final class MyApp extends StatelessWidget {
   const MyApp({super.key});

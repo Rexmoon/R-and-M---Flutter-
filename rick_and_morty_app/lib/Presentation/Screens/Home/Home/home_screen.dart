@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Detail/detail_screen.dart';
-import 'package:rick_and_morty_app/Presentation/Screens/Home/home_screen_provider.dart';
+import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen_provider.dart';
 
 final class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,7 +15,7 @@ final class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeScreenScaffold extends StatelessWidget {
+final class _HomeScreenScaffold extends StatelessWidget {
   const _HomeScreenScaffold();
 
   @override
@@ -28,14 +28,18 @@ class _HomeScreenScaffold extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Rick And Morty'),
         ),
-        body: ListView.separated(
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-            itemCount: viewModel.characters.length,
-            itemBuilder: ((context, index) {
-              return _ListTile(character: viewModel.characters[index]);
-            })));
+        body: viewModel.characters.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.separated(
+                separatorBuilder: (context, index) {
+                  return const Divider();
+                },
+                itemCount: viewModel.characters.length,
+                itemBuilder: ((context, index) {
+                  return _ListTile(character: viewModel.characters[index]);
+                })));
   }
 }
 
