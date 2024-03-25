@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
 import 'package:rick_and_morty_app/Domain/Repositories/rick_and_morty_repository.dart';
 
-final class HomeScreenProvider with ChangeNotifier {
-  final _repository = RickAndMortyRepository();
+final class CharacterProvider with ChangeNotifier {
+  final _repository = CharacterAPIRestRepository();
 
-  List<Character> _characters = [];
+  List<CharacterModel> _characters = [];
 
-  List<Character> get characters => _characters;
+  List<CharacterModel> get characters => _characters;
 
   Future<void> loadData() async {
     try {

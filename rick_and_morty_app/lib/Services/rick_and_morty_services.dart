@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-final class RickAndMortyServices {
+final class CharacterAPIRestServices {
   Future<Map<String, dynamic>> fetchData() async {
     try {
       final url = Uri.parse('https://rickandmortyapi.com/api/character');

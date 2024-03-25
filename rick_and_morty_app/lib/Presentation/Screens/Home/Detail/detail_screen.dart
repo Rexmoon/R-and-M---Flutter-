@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
 
 final class DetailScreen extends StatelessWidget {
-  final Character character;
+  final CharacterModel character;
 
   const DetailScreen({super.key, required this.character});
 

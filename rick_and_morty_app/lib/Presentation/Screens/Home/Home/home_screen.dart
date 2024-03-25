@@ -10,7 +10,7 @@ final class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => HomeScreenProvider(),
+        create: (context) => CharacterProvider(),
         child: const _HomeScreenScaffold());
   }
 }
@@ -20,7 +20,7 @@ final class _HomeScreenScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeScreenProvider>();
+    final viewModel = context.watch<CharacterProvider>();
 
     viewModel.loadData();
 
@@ -44,7 +44,7 @@ final class _HomeScreenScaffold extends StatelessWidget {
 }
 
 final class _ListTile extends StatelessWidget {
-  final Character character;
+  final CharacterModel character;
 
   const _ListTile({required this.character});
 

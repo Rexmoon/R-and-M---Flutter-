@@ -20,7 +20,7 @@ final class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: MultiProvider(providers: [
-        ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
+        ChangeNotifierProvider(create: (context) => CharacterProvider()),
       ], child: _HomeTabBarScreen()),
     );
   }
