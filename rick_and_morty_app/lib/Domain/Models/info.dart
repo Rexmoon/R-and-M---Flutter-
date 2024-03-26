@@ -2,20 +2,20 @@ final class InfoModel {
   int count;
   int pages;
   String next;
-  String? prev;
+  String prev;
 
   InfoModel({
     required this.count,
     required this.pages,
     required this.next,
-    this.prev = '',
+    required this.prev,
   });
 
   factory InfoModel.fromJson(Map<String, dynamic> json) => InfoModel(
       count: json['count'],
       pages: json['pages'],
       next: json['next'],
-      prev: json['prev']);
+      prev: json['prev'] ?? '');
 
   Map<String, dynamic> toJson() => {
         'count': count,

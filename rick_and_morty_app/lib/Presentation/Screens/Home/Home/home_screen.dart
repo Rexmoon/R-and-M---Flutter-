@@ -26,7 +26,9 @@ final class _HomeScreenScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<HomeScreenProvider>();
 
-    viewModel.loadData();
+    if (viewModel.characters.isEmpty) {
+      viewModel.loadData();
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -36,14 +38,22 @@ final class _HomeScreenScaffold extends StatelessWidget {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : ListView.separated(
-                separatorBuilder: (context, index) {
-                  return const Divider();
+            : NotificationListener<ScrollEndNotification>(
+                onNotification: (notification) {
+                  if (notification.metrics.extentAfter == 0) {
+                    viewModel.loadData(enablePagination: true);
+                  }
+                  return true;
                 },
-                itemCount: viewModel.characters.length,
-                itemBuilder: ((context, index) {
-                  return _ListTile(character: viewModel.characters[index]);
-                })));
+                child: ListView.separated(
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                    itemCount: viewModel.characters.length,
+                    itemBuilder: ((context, index) {
+                      return _ListTile(character: viewModel.characters[index]);
+                    })),
+              ));
   }
 }
 

@@ -4,7 +4,7 @@ final class CharacterModel {
   int id;
   String name;
   Status status;
-  Species species;
+  String species;
   String type;
   Gender gender;
   LocationModel origin;
@@ -12,7 +12,7 @@ final class CharacterModel {
   String image;
   List<String> episode;
   String url;
-  DateTime created;
+  DateTime? created; // Made created nullable using ?
 
   CharacterModel({
     required this.id,
@@ -26,14 +26,14 @@ final class CharacterModel {
     required this.image,
     required this.episode,
     required this.url,
-    required this.created,
+    this.created, // made created optional
   });
 
   factory CharacterModel.fromJson(Map<String, dynamic> json) => CharacterModel(
         id: json["id"],
         name: json["name"],
         status: statusValues.map[json["status"]]!,
-        species: speciesValues.map[json["species"]]!,
+        species: json["species"],
         type: json["type"],
         gender: genderValues.map[json["gender"]]!,
         origin: LocationModel.fromJson(json["origin"]),
@@ -41,14 +41,16 @@ final class CharacterModel {
         image: json["image"],
         episode: List<String>.from(json["episode"].map((x) => x)),
         url: json["url"],
-        created: DateTime.parse(json["created"]),
+        created: json["created"] != null
+            ? DateTime.parse(json["created"])
+            : null, // Check for null before parsing
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "status": statusValues.reverse[status],
-        "species": speciesValues.reverse[species],
+        "species": species,
         "type": type,
         "gender": genderValues.reverse[gender],
         "origin": origin.toJson(),
@@ -56,7 +58,8 @@ final class CharacterModel {
         "image": image,
         "episode": List<dynamic>.from(episode.map((x) => x)),
         "url": url,
-        "created": created.toIso8601String(),
+        "created": created
+            ?.toIso8601String(), // Use safe navigation (?) to avoid errors with null
       };
 }
 

@@ -11,10 +11,17 @@ final class HomeScreenProvider with ChangeNotifier {
 
   List<CharacterModel> get characters => _characters;
 
-  Future<void> loadData() async {
+  Future<void> loadData({bool enablePagination = false}) async {
     try {
-      await Future.delayed(const Duration(seconds: 3));
-      _characters = await repository.getCharacters();
+      final characters =
+          await repository.getCharacters(enablePagination: enablePagination);
+
+      if (enablePagination) {
+        _characters.addAll(characters);
+      } else {
+        _characters = characters;
+      }
+
       notifyListeners();
     } on Exception catch (e) {
       Exception(e);
