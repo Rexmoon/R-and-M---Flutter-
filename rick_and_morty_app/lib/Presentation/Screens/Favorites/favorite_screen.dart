@@ -9,19 +9,9 @@ final class FavoriteScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Favorites'),
       ),
-      body: GridView.count(crossAxisCount: 2, children: const [
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-        CustomCard(),
-      ]),
+      body: GridView.count(
+          crossAxisCount: 2,
+          children: [...List.filled(10, const CustomCard())]),
     );
   }
 }

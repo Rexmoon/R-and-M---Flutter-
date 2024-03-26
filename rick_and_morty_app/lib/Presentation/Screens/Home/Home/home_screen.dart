@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/rick_and_morty_repository.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Detail/detail_screen.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen_provider.dart';
 
@@ -9,8 +10,11 @@ final class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final characterRepository = context.read<CharacterAPIRestRepository>();
+
     return ChangeNotifierProvider(
-        create: (context) => CharacterProvider(),
+        create: (context) =>
+            HomeScreenProvider(repository: characterRepository),
         child: const _HomeScreenScaffold());
   }
 }
@@ -20,7 +24,7 @@ final class _HomeScreenScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<CharacterProvider>();
+    final viewModel = context.watch<HomeScreenProvider>();
 
     viewModel.loadData();
 
@@ -62,7 +66,9 @@ final class _ListTile extends StatelessWidget {
       title: Text(character.name),
       onTap: () => {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => DetailScreen(character: character)))
+            builder: (context) => DetailScreen(
+                  id: character.id,
+                )))
       },
     );
   }
