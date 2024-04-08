@@ -4,14 +4,14 @@ final class CharacterModel {
   int id;
   String name;
   Status status;
-  String species;
-  String type;
-  Gender gender;
+  String? species;
+  String? type;
+  Gender? gender;
   LocationModel origin;
   LocationModel location;
   String image;
-  List<String> episode;
-  String url;
+  List<String>? episode;
+  String? url;
   DateTime? created; // Made created nullable using ?
 
   CharacterModel({
@@ -33,14 +33,14 @@ final class CharacterModel {
         id: json["id"],
         name: json["name"],
         status: statusValues.map[json["status"]]!,
-        species: json["species"],
-        type: json["type"],
-        gender: genderValues.map[json["gender"]]!,
+        species: json["species"] ?? '',
+        type: json["type"] ?? '',
+        gender: genderValues.map[json["gender"] ?? 'unknown']!,
         origin: LocationModel.fromJson(json["origin"]),
         location: LocationModel.fromJson(json["location"]),
         image: json["image"],
-        episode: List<String>.from(json["episode"].map((x) => x)),
-        url: json["url"],
+        episode: List<String>.from(json["episode"].map((x) => x) ?? []),
+        url: json["url"] ?? '',
         created: json["created"] != null
             ? DateTime.parse(json["created"])
             : null, // Check for null before parsing
@@ -56,17 +56,22 @@ final class CharacterModel {
         "origin": origin.toJson(),
         "location": location.toJson(),
         "image": image,
-        "episode": List<dynamic>.from(episode.map((x) => x)),
+        "episode":
+            List<dynamic>.from(episode != null ? episode!.map((x) => x) : []),
         "url": url,
         "created": created
             ?.toIso8601String(), // Use safe navigation (?) to avoid errors with null
       };
 }
 
-enum Gender { female, male, unknown }
+enum Gender { female, male, unknown, genderless }
 
-final genderValues = EnumValues(
-    {"Female": Gender.female, "Male": Gender.male, "unknown": Gender.unknown});
+final genderValues = EnumValues({
+  'Female': Gender.female,
+  'Male': Gender.male,
+  'unknown': Gender.unknown,
+  'Genderless': Gender.genderless
+});
 
 final class LocationModel {
   String name;
@@ -88,10 +93,13 @@ final class LocationModel {
       };
 }
 
-enum Species { alien, human }
+enum Species { alien, human, mythologicalCreature }
 
-final speciesValues =
-    EnumValues({"Alien": Species.alien, "Human": Species.human});
+final speciesValues = EnumValues({
+  "Alien": Species.alien,
+  "Human": Species.human,
+  'Mythological Creature': Species.mythologicalCreature
+});
 
 enum Status { alive, dead, unknown }
 

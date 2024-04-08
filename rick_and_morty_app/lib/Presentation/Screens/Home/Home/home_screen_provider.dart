@@ -11,6 +11,8 @@ final class HomeScreenProvider with ChangeNotifier {
 
   List<CharacterModel> get characters => _characters;
 
+  int currentPage = 1;
+
   Future<void> loadData({bool enablePagination = false}) async {
     try {
       final characters =
@@ -26,5 +28,9 @@ final class HomeScreenProvider with ChangeNotifier {
     } on Exception catch (e) {
       Exception(e);
     }
+  }
+
+  bool canLoadMore() {
+    return repository.characterResponseModel.info.next != null;
   }
 }

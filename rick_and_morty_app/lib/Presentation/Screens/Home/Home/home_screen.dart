@@ -24,24 +24,25 @@ final class _HomeScreenScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeScreenProvider>();
+    final provider = context.watch<HomeScreenProvider>();
 
-    if (viewModel.characters.isEmpty) {
-      viewModel.loadData();
+    if (provider.characters.isEmpty) {
+      provider.loadData();
     }
 
     return Scaffold(
         appBar: AppBar(
           title: const Text('Rick And Morty'),
         ),
-        body: viewModel.characters.isEmpty
+        body: provider.characters.isEmpty
             ? const Center(
                 child: CircularProgressIndicator(),
               )
             : NotificationListener<ScrollEndNotification>(
                 onNotification: (notification) {
-                  if (notification.metrics.extentAfter == 0) {
-                    viewModel.loadData(enablePagination: true);
+                  if (notification.metrics.extentAfter == 0 &&
+                      provider.canLoadMore()) {
+                    provider.loadData(enablePagination: true);
                   }
                   return true;
                 },
@@ -49,9 +50,15 @@ final class _HomeScreenScaffold extends StatelessWidget {
                     separatorBuilder: (context, index) {
                       return const Divider();
                     },
-                    itemCount: viewModel.characters.length,
+                    itemCount: provider.characters.length,
                     itemBuilder: ((context, index) {
-                      return _ListTile(character: viewModel.characters[index]);
+                      if (index < provider.characters.length - 1) {
+                        return _ListTile(character: provider.characters[index]);
+                      } else if (provider.canLoadMore()) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return const Text('');
+                      }
                     })),
               ));
   }

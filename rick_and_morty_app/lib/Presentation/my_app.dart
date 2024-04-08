@@ -24,8 +24,8 @@ final class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: MultiProvider(providers: [
         Provider(
-            create: (context) =>
-                CharacterAPIRestRepository(service: characterAPIRestService)),
+            create: (context) => CharacterAPIRestRepository(
+                apiRestService: characterAPIRestService)),
       ], child: _HomeTabBarScreen()),
     );
   }
