@@ -21,8 +21,6 @@ final class CharacterFavoriteRepository {
       _favorites.insert(0, character);
     }
 
-    await Future.delayed(const Duration(seconds: 1));
-
     final listString = jsonEncode(
         _favorites.map<Map<String, dynamic>>((e) => e.toJson()).toList());
 
@@ -43,7 +41,8 @@ final class CharacterFavoriteRepository {
   }
 
   Future<bool> isFavorite({required int id}) async {
-    await Future.delayed(const Duration(seconds: 1));
+    final _ = await read();
+
     if (_favorites.isEmpty) return false;
     final index = _favorites.indexWhere((character) => character.id == id);
     return index != -1;
