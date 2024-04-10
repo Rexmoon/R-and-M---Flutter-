@@ -1,12 +1,11 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http_client;
 
-import 'package:http/http.dart' as http;
-
-final class RickAndMortyServices {
-  Future<Map<String, dynamic>> fetchData() async {
+final class CharacterAPIRestServices {
+  Future<Map<String, dynamic>> fetchData({required urlString}) async {
     try {
-      final url = Uri.parse('https://rickandmortyapi.com/api/character');
-      final response = await http.get(url);
+      final url = Uri.parse(urlString);
+      final response = await http_client.get(url);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);

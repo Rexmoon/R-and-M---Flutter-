@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-final class Character {
+final class CharacterModel {
   int id;
   String name;
   Status status;
-  Species species;
-  String type;
-  Gender gender;
-  Location origin;
-  Location location;
+  String? species;
+  String? type;
+  Gender? gender;
+  LocationModel origin;
+  LocationModel location;
   String image;
-  List<String> episode;
-  String url;
-  DateTime created;
+  List<String>? episode;
+  String? url;
+  DateTime? created; // Made created nullable using ?
 
-  Character({
+  CharacterModel({
     required this.id,
     required this.name,
     required this.status,
@@ -26,55 +26,63 @@ final class Character {
     required this.image,
     required this.episode,
     required this.url,
-    required this.created,
+    this.created, // made created optional
   });
 
-  factory Character.fromJson(Map<String, dynamic> json) => Character(
+  factory CharacterModel.fromJson(Map<String, dynamic> json) => CharacterModel(
         id: json["id"],
         name: json["name"],
         status: statusValues.map[json["status"]]!,
-        species: speciesValues.map[json["species"]]!,
-        type: json["type"],
-        gender: genderValues.map[json["gender"]]!,
-        origin: Location.fromJson(json["origin"]),
-        location: Location.fromJson(json["location"]),
+        species: json["species"] ?? '',
+        type: json["type"] ?? '',
+        gender: genderValues.map[json["gender"] ?? 'unknown']!,
+        origin: LocationModel.fromJson(json["origin"]),
+        location: LocationModel.fromJson(json["location"]),
         image: json["image"],
-        episode: List<String>.from(json["episode"].map((x) => x)),
-        url: json["url"],
-        created: DateTime.parse(json["created"]),
+        episode: List<String>.from(json["episode"].map((x) => x) ?? []),
+        url: json["url"] ?? '',
+        created: json["created"] != null
+            ? DateTime.parse(json["created"])
+            : null, // Check for null before parsing
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "status": statusValues.reverse[status],
-        "species": speciesValues.reverse[species],
+        "species": species,
         "type": type,
         "gender": genderValues.reverse[gender],
         "origin": origin.toJson(),
         "location": location.toJson(),
         "image": image,
-        "episode": List<dynamic>.from(episode.map((x) => x)),
+        "episode":
+            List<dynamic>.from(episode != null ? episode!.map((x) => x) : []),
         "url": url,
-        "created": created.toIso8601String(),
+        "created": created
+            ?.toIso8601String(), // Use safe navigation (?) to avoid errors with null
       };
 }
 
-enum Gender { female, male, unknown }
+enum Gender { female, male, unknown, genderless }
 
-final genderValues = EnumValues(
-    {"Female": Gender.female, "Male": Gender.male, "unknown": Gender.unknown});
+final genderValues = EnumValues({
+  'Female': Gender.female,
+  'Male': Gender.male,
+  'unknown': Gender.unknown,
+  'Genderless': Gender.genderless
+});
 
-class Location {
+final class LocationModel {
   String name;
   String url;
 
-  Location({
+  LocationModel({
     required this.name,
     required this.url,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) => Location(
+  factory LocationModel.fromJson(Map<String, dynamic> json) => LocationModel(
         name: json["name"],
         url: json["url"],
       );
@@ -85,10 +93,13 @@ class Location {
       };
 }
 
-enum Species { alien, human }
+enum Species { alien, human, mythologicalCreature }
 
-final speciesValues =
-    EnumValues({"Alien": Species.alien, "Human": Species.human});
+final speciesValues = EnumValues({
+  "Alien": Species.alien,
+  "Human": Species.human,
+  'Mythological Creature': Species.mythologicalCreature
+});
 
 enum Status { alive, dead, unknown }
 
@@ -108,7 +119,7 @@ extension StatusColor on Status {
 final statusValues = EnumValues(
     {"Alive": Status.alive, "Dead": Status.dead, "unknown": Status.unknown});
 
-class EnumValues<T> {
+final class EnumValues<T> {
   Map<String, T> map;
   late Map<T, String> reverseMap;
 

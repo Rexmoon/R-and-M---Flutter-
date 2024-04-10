@@ -1,20 +1,20 @@
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
 import 'package:rick_and_morty_app/Domain/Models/info.dart';
 
-final class CharacterResponse {
-  Info info;
-  List<Character> results;
+final class CharacterResponseModel {
+  InfoModel info;
+  List<CharacterModel> results;
 
-  CharacterResponse({
+  CharacterResponseModel({
     required this.info,
     required this.results,
   });
 
-  factory CharacterResponse.fromJson(Map<String, dynamic> json) =>
-      CharacterResponse(
-        info: Info.fromJson(json["info"]),
-        results: List<Character>.from(
-            json["results"].map((x) => Character.fromJson(x))),
+  factory CharacterResponseModel.fromJson(Map<String, dynamic> json) =>
+      CharacterResponseModel(
+        info: InfoModel.fromJson(json["info"]),
+        results: List<CharacterModel>.from(
+            json["results"].map((x) => CharacterModel.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

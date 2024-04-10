@@ -1,15 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_api_rest_repository.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_favorites_repository.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Favorites/favorite_screen.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen.dart';
-import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen_provider.dart';
+import 'package:rick_and_morty_app/Services/character_api_rest_services.dart';
+import 'package:rick_and_morty_app/Services/character_favorites_services.dart';
 
 final class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final characterAPIRestService = CharacterAPIRestServices();
+    final characterFavoritesService = CharacterFavoritesServices();
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.dark,
@@ -20,7 +25,12 @@ final class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: MultiProvider(providers: [
-        ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
+        Provider(
+            create: (context) => CharacterAPIRestRepository(
+                apiRestService: characterAPIRestService)),
+        Provider(
+            create: (context) => CharacterFavoriteRepository(
+                services: characterFavoritesService))
       ], child: _HomeTabBarScreen()),
     );
   }

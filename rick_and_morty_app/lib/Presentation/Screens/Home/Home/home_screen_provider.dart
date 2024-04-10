@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
-import 'package:rick_and_morty_app/Domain/Repositories/rick_and_morty_repository.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_api_rest_repository.dart';
 
 final class HomeScreenProvider with ChangeNotifier {
-  final _repository = RickAndMortyRepository();
+  final CharacterAPIRestRepository repository;
 
-  List<Character> _characters = [];
+  HomeScreenProvider({required this.repository});
 
-  List<Character> get characters => _characters;
+  List<CharacterModel> _characters = [];
 
-  Future<void> loadData() async {
+  List<CharacterModel> get characters => _characters;
+
+  int currentPage = 1;
+
+  Future<void> loadData({bool enablePagination = false}) async {
     try {
-      await Future.delayed(const Duration(seconds: 3));
-      _characters = await _repository.getCharacters();
+      final characters =
+          await repository.getCharacters(enablePagination: enablePagination);
+
+      if (enablePagination) {
+        _characters.addAll(characters);
+      } else {
+        _characters = characters;
+      }
+
       notifyListeners();
     } on Exception catch (e) {
       Exception(e);
     }
+  }
+
+  bool canLoadMore() {
+    return repository.characterResponseModel.info.next != null;
   }
 }

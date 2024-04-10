@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_api_rest_repository.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Detail/detail_screen.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen_provider.dart';
 
@@ -9,8 +10,11 @@ final class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final characterRepository = context.read<CharacterAPIRestRepository>();
+
     return ChangeNotifierProvider(
-        create: (context) => HomeScreenProvider(),
+        create: (context) =>
+            HomeScreenProvider(repository: characterRepository),
         child: const _HomeScreenScaffold());
   }
 }
@@ -20,31 +24,48 @@ final class _HomeScreenScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeScreenProvider>();
+    final provider = context.watch<HomeScreenProvider>();
 
-    viewModel.loadData();
+    if (provider.characters.isEmpty) {
+      provider.loadData();
+    }
 
     return Scaffold(
         appBar: AppBar(
           title: const Text('Rick And Morty'),
         ),
-        body: viewModel.characters.isEmpty
+        body: provider.characters.isEmpty
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : ListView.separated(
-                separatorBuilder: (context, index) {
-                  return const Divider();
+            : NotificationListener<ScrollEndNotification>(
+                onNotification: (notification) {
+                  if (notification.metrics.extentAfter == 0 &&
+                      provider.canLoadMore()) {
+                    provider.loadData(enablePagination: true);
+                  }
+                  return true;
                 },
-                itemCount: viewModel.characters.length,
-                itemBuilder: ((context, index) {
-                  return _ListTile(character: viewModel.characters[index]);
-                })));
+                child: ListView.separated(
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                    itemCount: provider.characters.length,
+                    itemBuilder: ((context, index) {
+                      if (index < provider.characters.length - 1) {
+                        return _ListTile(character: provider.characters[index]);
+                      } else if (provider.canLoadMore()) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return const Text('');
+                      }
+                    })),
+              ));
   }
 }
 
 final class _ListTile extends StatelessWidget {
-  final Character character;
+  final CharacterModel character;
 
   const _ListTile({required this.character});
 
@@ -62,7 +83,9 @@ final class _ListTile extends StatelessWidget {
       title: Text(character.name),
       onTap: () => {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => DetailScreen(character: character)))
+            builder: (context) => DetailScreen(
+                  id: character.id,
+                )))
       },
     );
   }

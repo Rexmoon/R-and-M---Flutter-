@@ -1,17 +1,17 @@
-final class Info {
+final class InfoModel {
   int count;
   int pages;
-  String next;
+  String? next;
   String? prev;
 
-  Info({
+  InfoModel({
     required this.count,
     required this.pages,
     required this.next,
-    this.prev = '',
+    required this.prev,
   });
 
-  factory Info.fromJson(Map<String, dynamic> json) => Info(
+  factory InfoModel.fromJson(Map<String, dynamic> json) => InfoModel(
       count: json['count'],
       pages: json['pages'],
       next: json['next'],
