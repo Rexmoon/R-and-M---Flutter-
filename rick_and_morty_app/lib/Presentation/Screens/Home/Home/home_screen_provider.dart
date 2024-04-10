@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
-import 'package:rick_and_morty_app/Domain/Repositories/rick_and_morty_repository.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_api_rest_repository.dart';
 
 final class HomeScreenProvider with ChangeNotifier {
   final CharacterAPIRestRepository repository;

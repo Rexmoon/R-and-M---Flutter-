@@ -1,6 +1,6 @@
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
 import 'package:rick_and_morty_app/Domain/Models/response.dart';
-import 'package:rick_and_morty_app/Services/rick_and_morty_services.dart';
+import 'package:rick_and_morty_app/Services/character_api_rest_services.dart';
 
 final class CharacterAPIRestRepository {
   CharacterAPIRestRepository({required this.apiRestService});
@@ -15,24 +15,16 @@ final class CharacterAPIRestRepository {
   Future<List<CharacterModel>> getCharacters(
       {bool enablePagination = false}) async {
     final url = enablePagination ? characterResponseModel.info.next : _baseURL;
-    try {
-      final data = await apiRestService.fetchData(urlString: url);
-      characterResponseModel = CharacterResponseModel.fromJson(data);
-      _characterList = characterResponseModel.results;
-      return Future.value(_characterList);
-    } catch (e) {
-      return Future.error(Exception(e));
-    }
+    final data = await apiRestService.fetchData(urlString: url);
+    characterResponseModel = CharacterResponseModel.fromJson(data);
+    _characterList = characterResponseModel.results;
+    return Future.value(_characterList);
   }
 
   Future<CharacterModel> getCharacter({required int id}) async {
     final url = '$_baseURL$id';
-    try {
-      final data = await apiRestService.fetchData(urlString: url);
-      final decodedData = CharacterModel.fromJson(data);
-      return decodedData;
-    } catch (e) {
-      return Future.error(e);
-    }
+    final data = await apiRestService.fetchData(urlString: url);
+    final decodedData = CharacterModel.fromJson(data);
+    return decodedData;
   }
 }

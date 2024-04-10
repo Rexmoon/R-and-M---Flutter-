@@ -1,23 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rick_and_morty_app/Domain/Models/character.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_favorites_repository.dart';
+import 'package:rick_and_morty_app/Presentation/Screens/Favorites/favorite_screen_provider.dart';
 
 final class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final favoriteRepository = context.read<CharacterFavoriteRepository>();
+
+    return ChangeNotifierProvider(
+      create: (context) =>
+          FavoriteScreenProvider(favoritesrepository: favoriteRepository),
+      child: const _FavoriteScaffold(),
+    );
+  }
+}
+
+final class _FavoriteScaffold extends StatelessWidget {
+  const _FavoriteScaffold();
+
+  @override
+  Widget build(BuildContext context) {
+    final favoriteProvider = context.watch<FavoriteScreenProvider>();
+
+    favoriteProvider.loadData();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorites'),
       ),
-      body: GridView.count(
+      body: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          children: [...List.filled(10, const CustomCard())]),
+        ),
+        itemCount: favoriteProvider.favorites.length,
+        itemBuilder: (context, index) {
+          if (favoriteProvider.favorites.isEmpty) {
+            return const Center(child: Text('No favorites yet'));
+          } else {
+            return CustomCard(favorite: favoriteProvider.favorites[index]);
+          }
+        },
+      ),
     );
   }
 }
 
 final class CustomCard extends StatelessWidget {
-  const CustomCard({super.key});
+  const CustomCard({super.key, required this.favorite});
+
+  final CharacterModel favorite;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +64,14 @@ final class CustomCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
-            Image.network(
-                width: 100,
-                'https://pub.dev/packages/flutter_bloc/versions/8.1.4/gen-res/gen/190x190/logo.webp'),
+            const Icon(
+              Icons.device_unknown,
+              size: 150,
+            ),
             const Spacer(),
-            const Text(
-              'Name',
-              style: TextStyle(
+            Text(
+              favorite.name,
+              style: const TextStyle(
                   fontStyle: FontStyle.italic, fontWeight: FontWeight.w900),
             )
           ]),

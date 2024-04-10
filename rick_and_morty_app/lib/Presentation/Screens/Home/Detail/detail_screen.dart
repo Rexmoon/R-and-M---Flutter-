@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
-import 'package:rick_and_morty_app/Domain/Repositories/rick_and_morty_repository.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_api_rest_repository.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_favorites_repository.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Detail/detail_screen_provider.dart';
 
 final class DetailScreen extends StatelessWidget {
-  final int id;
-
   const DetailScreen({super.key, required this.id});
+
+  final int id;
 
   @override
   Widget build(BuildContext context) {
-    final repository = context.read<CharacterAPIRestRepository>();
+    final apiRestRepository = context.read<CharacterAPIRestRepository>();
+    final favoritesRepository = context.read<CharacterFavoriteRepository>();
 
     return ChangeNotifierProvider(
-        create: (context) =>
-            DetailScreenProvider(characterAPIRestRepository: repository),
-        child: _DetailScreenScaffold(
-          id: id,
-        ));
+        create: (context) => DetailScreenProvider(
+            characterAPIRestRepository: apiRestRepository,
+            characterFavoriteRepository: favoritesRepository),
+        child: _DetailScreenScaffold(id: id));
   }
 }
 
 final class _DetailScreenScaffold extends StatelessWidget {
-  final int id;
-
   const _DetailScreenScaffold({required this.id});
+
+  final int id;
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final provider = context.watch<DetailScreenProvider>();
+    final detailProvider = context.watch<DetailScreenProvider>();
 
-    provider.loadData(id: id);
+    if (detailProvider.character == null) detailProvider.loadData(id: id);
 
     return Scaffold(
         appBar: AppBar(
@@ -48,24 +49,33 @@ final class _DetailScreenScaffold extends StatelessWidget {
               onPressed: () => Navigator.pop(context),
             ),
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  detailProvider.saveAsFavorite();
+                },
+                icon: Icon(detailProvider.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border))
+          ],
           title: const Text('Detail Screen'),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
-          child: provider.character != null
+          child: detailProvider.character != null
               ? Column(children: [
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                            color: provider.character!.status.color,
+                            color: detailProvider.character!.status.color,
                             width: 10)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
                           fit: BoxFit.fill,
                           height: screenSize.height * 0.5,
-                          provider.character!.image),
+                          detailProvider.character!.image),
                     ),
                   ),
                   Padding(
@@ -73,12 +83,12 @@ final class _DetailScreenScaffold extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          provider.character!.name,
+                          detailProvider.character!.name,
                           maxLines: 1,
                           style: const TextStyle(
                               fontFamily: 'Times New Roman', fontSize: 32),
                         ),
-                        Text(provider.character!.origin.name)
+                        Text(detailProvider.character!.origin.name)
                       ],
                     ),
                   )

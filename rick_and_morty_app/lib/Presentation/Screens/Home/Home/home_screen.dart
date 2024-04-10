@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
-import 'package:rick_and_morty_app/Domain/Repositories/rick_and_morty_repository.dart';
+import 'package:rick_and_morty_app/Domain/Repositories/character_api_rest_repository.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Detail/detail_screen.dart';
 import 'package:rick_and_morty_app/Presentation/Screens/Home/Home/home_screen_provider.dart';
 
