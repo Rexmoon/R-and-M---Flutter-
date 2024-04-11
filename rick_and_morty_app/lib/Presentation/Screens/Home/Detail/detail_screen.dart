@@ -37,6 +37,10 @@ final class _DetailScreenScaffold extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30))),
           leading: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),

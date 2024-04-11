@@ -24,7 +24,7 @@ final class CharacterFavoriteRepository {
     final listString = jsonEncode(
         _favorites.map<Map<String, dynamic>>((e) => e.toJson()).toList());
 
-    final _ = await _services.save(data: listString);
+    await _services.save(data: listString);
 
     return _favorites;
   }

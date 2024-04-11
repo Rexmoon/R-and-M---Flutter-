@@ -33,7 +33,7 @@ final class _FavoriteScaffold extends StatelessWidget {
         title: const Text('Favorites'),
       ),
       body: GridView.builder(
-        shrinkWrap: true,
+        // shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
         ),
@@ -60,6 +60,7 @@ final class CustomCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
+        // transform: Matrix4.rotationX(),
         color: Colors.blue,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -73,6 +74,7 @@ final class CustomCard extends StatelessWidget {
               favorite.name,
               style: const TextStyle(
                   fontStyle: FontStyle.italic, fontWeight: FontWeight.w900),
+              overflow: TextOverflow.ellipsis,
             )
           ]),
         ),
