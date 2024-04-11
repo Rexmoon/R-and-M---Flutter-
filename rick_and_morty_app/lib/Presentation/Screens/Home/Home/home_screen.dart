@@ -25,6 +25,7 @@ final class _HomeScreenScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<HomeScreenProvider>();
+    final screenSize = MediaQuery.of(context).size;
 
     if (provider.characters.isEmpty) {
       provider.loadData();
@@ -34,32 +35,54 @@ final class _HomeScreenScaffold extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Rick And Morty'),
         ),
-        body: provider.characters.isEmpty
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : NotificationListener<ScrollEndNotification>(
-                onNotification: (notification) {
-                  if (notification.metrics.extentAfter == 0 &&
-                      provider.canLoadMore()) {
-                    provider.loadData(enablePagination: true);
-                  }
-                  return true;
-                },
-                child: ListView.separated(
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
-                    itemCount: provider.characters.length,
-                    itemBuilder: ((context, index) {
-                      if (index < provider.characters.length - 1) {
-                        return _ListTile(character: provider.characters[index]);
-                      } else if (provider.canLoadMore()) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else {
-                        return const Text('');
+        body: provider.hasInternetConnection
+            ? provider.characters.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : NotificationListener<ScrollEndNotification>(
+                    onNotification: (notification) {
+                      if (notification.metrics.extentAfter == 0 &&
+                          provider.canLoadMore()) {
+                        provider.loadData(enablePagination: true);
                       }
-                    })),
+                      return true;
+                    },
+                    child: ListView.separated(
+                        separatorBuilder: (context, index) {
+                          return const Divider();
+                        },
+                        itemCount: provider.characters.length,
+                        itemBuilder: ((context, index) {
+                          if (index < provider.characters.length - 1) {
+                            return _ListTile(
+                                character: provider.characters[index]);
+                          } else if (provider.canLoadMore()) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else {
+                            return const Text('');
+                          }
+                        })),
+                  )
+            : Center(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: screenSize.height * 0.4,
+                    ),
+                    const Text('Please review your internet connection.'),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {
+                        provider.loadData();
+                      },
+                      child: const Icon(Icons.replay_outlined),
+                    )
+                  ],
+                ),
               ));
   }
 }

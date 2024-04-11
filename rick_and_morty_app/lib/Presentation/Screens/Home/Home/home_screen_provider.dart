@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/Domain/Models/character.dart';
 import 'package:rick_and_morty_app/Domain/Repositories/character_api_rest_repository.dart';
+import 'package:rick_and_morty_app/Services/connection_checker_services.dart';
 
-final class HomeScreenProvider with ChangeNotifier {
-  final CharacterAPIRestRepository repository;
+final class HomeScreenProvider extends ChangeNotifier
+    with ConnectionCheckerServicesMixin {
+  HomeScreenProvider({required CharacterAPIRestRepository repository})
+      : _repository = repository;
 
-  HomeScreenProvider({required this.repository});
+  final CharacterAPIRestRepository _repository;
 
   List<CharacterModel> _characters = [];
 
@@ -13,24 +16,31 @@ final class HomeScreenProvider with ChangeNotifier {
 
   int currentPage = 1;
 
+  bool hasInternetConnection = false;
+
   Future<void> loadData({bool enablePagination = false}) async {
-    try {
-      final characters =
-          await repository.getCharacters(enablePagination: enablePagination);
+    await checkConnection();
 
-      if (enablePagination) {
-        _characters.addAll(characters);
-      } else {
-        _characters = characters;
-      }
+    final characters =
+        await _repository.getCharacters(enablePagination: enablePagination);
 
-      notifyListeners();
-    } on Exception catch (e) {
-      Exception(e);
+    if (enablePagination) {
+      _characters.addAll(characters);
+    } else {
+      _characters = characters;
     }
+
+    notifyListeners();
   }
 
   bool canLoadMore() {
-    return repository.characterResponseModel.info.next != null;
+    return _repository.characterResponseModel.info.next != null;
+  }
+
+  // Internet connection checker service mixin
+
+  Future<void> checkConnection() async {
+    hasInternetConnection = await hasConnection;
+    notifyListeners();
   }
 }

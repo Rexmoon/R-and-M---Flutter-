@@ -18,10 +18,8 @@ final class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.dark,
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          // backgroundColor: Colors.blue
-        ),
+        appBarTheme:
+            const AppBarTheme(centerTitle: true, backgroundColor: Colors.blue),
       ),
       debugShowCheckedModeBanner: false,
       home: MultiProvider(providers: [
